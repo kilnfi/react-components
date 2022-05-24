@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+
+* {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+}
+
+button {
+    -webkit-appearance: button;
+    cursor: pointer;
+}
+
+@tailwind utilities;
+
+.rc-text-subtitle-1 {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600;
+}
+
+.rc-text-subtitle-2 {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+.rc-text-subtitle-3 {
+    font-family: 'DM Mono', 'monospace';
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+}
+
+.rc-text-body-1 {
+    font-size: 15px;
+    line-height: 18px;
+    font-weight: 400;
+}
+
+.rc-text-body-2 {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.rc-text-body-3 {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.rc-text-caption-1 {
+    font-family: 'DM Mono', 'monospace';
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+}
+
+.rc-text-caption-2 {
+    font-family: 'DM Mono', 'monospace';
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+}
+
+.rc-text-caption-3 {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.rc-text-small-1 {
+    font-family: 'DM Mono', 'monospace';
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 500;
+}
+
+.rc-text-small-2 {
+    font-family: 'DM Mono', 'monospace';
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+}
+
+.rc-text-small-3 {
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
