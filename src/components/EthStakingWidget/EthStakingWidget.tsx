@@ -12,7 +12,7 @@ export type Config = {
   apiKey: string;
   accountId: string;
   network: 'goerli' | 'mainnet';
-  chainId: 5 | 1;
+  chainId: number | undefined;
   defaultAmount?: number;
   maximumAmount?: number;
   networkApy?: number;
