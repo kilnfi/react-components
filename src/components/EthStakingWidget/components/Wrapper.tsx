@@ -78,7 +78,7 @@ const Wrapper = ({ config, provider, account, className = '', children }: Props)
       ...context,
       config,
     })
-  }, [config.accountId]);
+  }, [config.accountId, config.chainId]);
 
   return (
     <div
