@@ -26,6 +26,7 @@ DefaultStakingWidget.args = {
     apiKey: '',
     accountId: '',
     network: 'goerli',
+    chainId: 5,
     networkApy: 5,
   },
   provider: undefined,

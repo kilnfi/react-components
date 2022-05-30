@@ -152,7 +152,7 @@ const Status = () => {
   );
 
   const neededChainId = context.config.network === 'goerli' ? 5 : 1;
-  const isAccountValid: boolean = Boolean(context.account) && context.provider?._network?.chainId === neededChainId;
+  const isAccountValid: boolean = Boolean(context.account) && context.config.chainId === neededChainId;
 
   return (
     <div className="rc-px-4">

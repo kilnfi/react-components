@@ -9,6 +9,7 @@ describe("EthStakingWidget", () => {
       apiKey: '',
       accountId: '',
       network: 'goerli',
+      chainId: 5,
       networkApy: 5,
     };
     render(<EthStakingWidget provider={undefined} config={config}/>);

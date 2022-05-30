@@ -25,6 +25,7 @@ const DEFAULT_CONTEXT_VALUES: ContextValues = {
     apiKey: '',
     accountId: '',
     network: 'goerli',
+    chainId: 5,
   },
   provider: undefined,
   stakeAmount: 32,
