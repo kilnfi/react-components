@@ -9,13 +9,17 @@ export type ValidationKeyDepositData = {
   };
 };
 
-export const generateEthKey = async (
+export const generateEthKeys = async (
   apiUrl: string,
   apiKey: string,
   withdrawalAddress: string,
   accountId: string,
+  number: number,
 ): Promise<ValidationKeyDepositData> => {
-  return api<ValidationKeyDepositData>('POST', '/v0/eth/keys', { apiUrl, apiKey, accountId }, {
-    withdrawalAddress,
+  return api<ValidationKeyDepositData>('POST', '/v1/eth/keys', { apiUrl, apiKey }, {
+    withdrawal_address: withdrawalAddress,
+    account_id: accountId,
+    number: number,
+    format: 'batch_deposit'
   });
 };

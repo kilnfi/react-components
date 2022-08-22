@@ -1,10 +1,10 @@
 import React from "react";
 import CheckboxInput from "../../UI/form/CheckboxInput";
 import Button from "../../UI/Button";
-import { LoadingIcon, ExternalLinkIcon } from "../../Icons";
+import { ExternalLinkIcon, LoadingIcon } from "../../Icons";
 import InfoCard from "../../UI/InfoCard";
 import { useEthStakingWidgetContext } from "../useEthStakingWidgetContext";
-import { generateEthKey, ValidationKeyDepositData } from "../../../api/eth";
+import { generateEthKeys, ValidationKeyDepositData } from "../../../api/eth";
 import { utils } from "ethers";
 import {
   GOERLI_DEPOSIT_CONTRACT_ADDRESS,
@@ -28,8 +28,8 @@ const Status = () => {
   const handleConfirmAddress = () => {
     setContext({
       ...context,
-      isAddressConfirmed: !context.isAddressConfirmed
-    })
+      isAddressConfirmed: !context.isAddressConfirmed,
+    });
   };
 
   const handleStake = async () => {
@@ -38,22 +38,16 @@ const Status = () => {
     const generateKeys = async (
       account: string,
       accountId: string,
-    ): Promise<ValidationKeyDepositData[]> => {
+    ): Promise<ValidationKeyDepositData | undefined> => {
       const nbKeys = context.stakeAmount / 32;
-      const generated: ValidationKeyDepositData[] = [];
-
-      for (let i = 0; i < nbKeys; i += 1) {
-        try {
-          const key = await generateEthKey(context.config.apiUrl, context.config.apiKey, account, accountId);
-          generated.push(key);
-        } catch (e) {
-          reset();
-          if (context.config.onError && typeof context.config.onError === 'function') {
-            context.config.onError('An error happened while preparing validators. Please try again later.');
-          }
+      try {
+        return await generateEthKeys(context.config.apiUrl, context.config.apiKey, account, accountId, nbKeys);
+      } catch (e) {
+        reset();
+        if (context.config.onError && typeof context.config.onError === 'function') {
+          context.config.onError('An error happened while preparing validators. Please try again later.');
         }
       }
-      return generated;
     };
 
     try {
@@ -64,9 +58,16 @@ const Status = () => {
       // Generate keys
       setContext({
         ...context,
-        stakingState: 'generating_keys'
+        stakingState: 'generating_keys',
       });
       const generatedKeys = await generateKeys(context.account, context.config.accountId);
+      if(!generatedKeys){
+        reset();
+        if (context.config.onError && typeof context.config.onError === 'function') {
+          context.config.onError('An error happened while preparing validators. Please try again later.');
+        }
+        return;
+      }
 
       // onPendingTxSignature
       if (context.config.onPendingTxSignature && typeof context.config.onPendingTxSignature === 'function') {
@@ -77,24 +78,16 @@ const Status = () => {
       // Send tx
       setContext({
         ...context,
-        stakingState: 'pending_tx_signature'
+        stakingState: 'pending_tx_signature',
       });
       const res = await context.contract.batchDeposit(
-        generatedKeys
-          .map((k) => k.data.pubkeys)
-          .reduce((prev, current) => prev.concat(current))
+        generatedKeys.data.pubkeys
           .map((v) => '0x' + v),
-        generatedKeys
-          .map((k) => k.data.withdrawal_credentials)
-          .reduce((prev, current) => prev.concat(current))
+        generatedKeys.data.withdrawal_credentials
           .map((v) => '0x' + v),
-        generatedKeys
-          .map((k) => k.data.signatures)
-          .reduce((prev, current) => prev.concat(current))
+        generatedKeys.data.signatures
           .map((v) => '0x' + v),
-        generatedKeys
-          .map((k) => k.data.deposit_data_roots)
-          .reduce((prev, current) => prev.concat(current))
+        generatedKeys.data.deposit_data_roots
           .map((v) => '0x' + v),
         { value: utils.parseEther(context.stakeAmount.toString()) },
       );
@@ -105,7 +98,7 @@ const Status = () => {
       }
       setContext({
         ...context,
-        stakingState: 'mining_deposit_tx'
+        stakingState: 'mining_deposit_tx',
       });
       const receipt = await res.wait();
       if (receipt.status === 0) { // tx failed
@@ -120,7 +113,7 @@ const Status = () => {
         }
         setContext({
           ...context,
-          stakingState: 'stake_deposited'
+          stakingState: 'stake_deposited',
         });
       }
     } catch (e: any) {
@@ -159,10 +152,12 @@ const Status = () => {
       {(context.stakingState === 'initial' && isAccountValid) && (
         <>
           {showInsufficientBalanceWarning ? (
-            <InfoCard className="rc-mb-4" label={`Insufficient funds to stake ${context.stakeAmount} ETH`}/>
+            <InfoCard className="rc-mb-4"
+                      label={`Insufficient funds to stake ${context.stakeAmount} ETH`}/>
           ) : (
             <div className="rc-mb-4">
-              <InfoCard className="rc-mb-4" label="Please verify your wallet address">
+              <InfoCard className="rc-mb-4"
+                        label="Please verify your wallet address">
                 <a
                   href={`https://${context.config.network === 'goerli' ? 'goerli.' : ''}etherscan.io/address/${context.account}`}
                   className="rc-col-span-2 rc-inline-block hover:rc-underline rc-mt-2"
@@ -198,7 +193,8 @@ const Status = () => {
       )}
 
       {context.stakingState === 'initial' && !isAccountValid && (
-        <InfoCard label={`Connect an Ethereum ${context.config.network} wallet`}/>
+        <InfoCard
+          label={`Connect an Ethereum ${context.config.network} wallet`}/>
       )}
 
       {context.stakingState === 'generating_keys' && (
@@ -247,7 +243,7 @@ const Status = () => {
         </>
       )}
     </div>
-  )
+  );
 };
 
 export default Status;
