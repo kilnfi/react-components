@@ -61,7 +61,7 @@ const Status = () => {
         stakingState: 'generating_keys',
       });
       const generatedKeys = await generateKeys(context.account, context.config.accountId);
-      if(!generatedKeys){
+      if (!generatedKeys) {
         reset();
         if (context.config.onError && typeof context.config.onError === 'function') {
           context.config.onError('An error happened while preparing validators. Please try again later.');
