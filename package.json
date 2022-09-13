@@ -1,6 +1,6 @@
 {
   "name": "@kilnfi/react-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Staking widgets available as react components",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
