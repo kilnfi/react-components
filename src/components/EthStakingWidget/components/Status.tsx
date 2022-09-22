@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CheckboxInput from "../../UI/form/CheckboxInput";
 import Button from "../../UI/Button";
 import { ExternalLinkIcon, LoadingIcon } from "../../Icons";
@@ -14,6 +14,7 @@ import SuccessCardWhite from "../../UI/SuccessCardWhite";
 
 const Status = () => {
   const { context, setContext } = useEthStakingWidgetContext();
+  const [txHash, setTxHash] = useState<string>('');
 
   const reset = () => {
     setContext({
@@ -101,6 +102,7 @@ const Status = () => {
         stakingState: 'mining_deposit_tx',
       });
       const receipt = await res.wait();
+      setTxHash(receipt.transactionHash);
       if (receipt.status === 0) { // tx failed
         if (context.config.onError && typeof context.config.onError === 'function') {
           context.config.onError('The transaction could not be processed by the network, please try again later.');
@@ -228,7 +230,23 @@ const Status = () => {
       {context.stakingState === 'stake_deposited' && (
         <>
           <SuccessCardWhite label="Congrats!" className="rc-mb-6">
-            You have successfully staked {context.stakeAmount} ETH!
+            You have successfully staked {context.stakeAmount} ETH!<br/>
+            If you don&apos;t see your stake in the rewards page, please
+            wait a few minutes.<br/><br/>
+
+            <a
+              href={`https://${context.config.network === 'goerli' ? 'goerli.' : ''}etherscan.io/tx/${txHash}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+                  <span className="break-all">
+                View transaction
+                    <ExternalLinkIcon
+                      className={`inline ml-1 relative bottom-[1px] h-4 w-4`}
+                      aria-hidden="true"
+                    />
+                  </span>
+            </a>
           </SuccessCardWhite>
 
           <div className="rc-mb-4">
