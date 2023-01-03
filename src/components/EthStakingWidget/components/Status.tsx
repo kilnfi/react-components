@@ -5,7 +5,7 @@ import { ExternalLinkIcon, LoadingIcon } from "../../Icons";
 import InfoCard from "../../UI/InfoCard";
 import { useEthStakingWidgetContext } from "../useEthStakingWidgetContext";
 import { generateEthKeys, ValidationKeyDepositData } from "../../../api/eth";
-import { utils } from "ethers";
+import { BigNumber, utils } from "ethers";
 import {
   GOERLI_DEPOSIT_CONTRACT_ADDRESS,
   MAINNET_DEPOSIT_CONTRACT_ADDRESS,
@@ -81,6 +81,23 @@ const Status = () => {
         ...context,
         stakingState: 'pending_tx_signature',
       });
+
+      // Estimate gas
+      const estimatedGas: BigNumber = await context.contract.estimateGas.batchDeposit(
+          generatedKeys.data.pubkeys
+              .map((v) => '0x' + v),
+          generatedKeys.data.withdrawal_credentials
+              .map((v) => '0x' + v),
+          generatedKeys.data.signatures
+              .map((v) => '0x' + v),
+          generatedKeys.data.deposit_data_roots
+              .map((v) => '0x' + v),
+          { value: utils.parseEther(context.stakeAmount.toString()) },
+      );
+
+      // Gas limit = estimated gas x 2 to prevent tx broadcasted long after being signed from running out of gas
+      const gasLimit = estimatedGas.mul(2);
+
       const res = await context.contract.batchDeposit(
         generatedKeys.data.pubkeys
           .map((v) => '0x' + v),
@@ -90,7 +107,10 @@ const Status = () => {
           .map((v) => '0x' + v),
         generatedKeys.data.deposit_data_roots
           .map((v) => '0x' + v),
-        { value: utils.parseEther(context.stakeAmount.toString()) },
+        {
+          value: utils.parseEther(context.stakeAmount.toString()),
+          gasLimit: gasLimit,
+        },
       );
 
       // onMiningDepositTx
@@ -145,7 +165,6 @@ const Status = () => {
     context.stakingState === 'initial' &&
     (context.stakeAmount === 0 || showInsufficientBalanceWarning || !context.isAddressConfirmed || context.config.accountId === ''),
   );
-
   const neededChainId = context.config.network === 'goerli' ? 5 : 1;
   const isAccountValid: boolean = Boolean(context.account) && context.config.chainId === neededChainId;
 
