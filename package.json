@@ -53,7 +53,6 @@
     "react": "^17.0.2 || ^18.0.0"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.7",
     "@radix-ui/react-slider": "^0.1.5-rc.6",
     "@radix-ui/react-tooltip": "^1.0.0",
     "axios": "^0.26.1",
