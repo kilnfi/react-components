@@ -52,7 +52,7 @@ const SelectAmount = () => {
             className="rc-flex rc-flex rc-items-center rc-justify-end rc-gap-x-2 rc-flex-shrink-0">
                   <span
                     className="rc-inline-block rc-text-subtitle-3 rc-text-gray-700 rc-text-right">
-                Reward Rate
+                GRR
                   </span>
             <Tooltip>
               <Tooltip.Trigger>
@@ -62,7 +62,7 @@ const SelectAmount = () => {
               </Tooltip.Trigger>
               <Tooltip.Content className="rc-max-w-[300px] rc-p-2">
                       <span className="rc-flex rc-text-sm rc-text-gray-900">
-                  The estimated reward rate your will earn per year. This is calculated with real-time blockchain data.
+                  The estimated gross reward rate your will earn per year. This is calculated with real-time blockchain data.
                       </span>
               </Tooltip.Content>
             </Tooltip>
